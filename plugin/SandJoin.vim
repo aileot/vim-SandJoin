@@ -32,12 +32,10 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 
-command! -bar -range SandJoin :call SandJoin#do(<line1>, <line2>)
+command! -bar -range SandJoin :call SandJoin#do("<line1>", "<line2>")
 
-nnoremap <silent> <Plug>(SandJoin)
-      \ :<c-u>call SandJoin#do("line('.')")<cr>
-xnoremap <silent> <Plug>(SandJoin)
-      \ :<c-u>call SandJoin#do("line('<)", "line('>)")<cr>
+nnoremap <silent> <Plug>(SandJoin) :<c-u>SandJoin<cr>
+xnoremap <silent> <Plug>(SandJoin) :SandJoin<cr>
 
 " restore 'cpoptions' {{{1
 let &cpo = s:save_cpo
