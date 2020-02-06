@@ -34,10 +34,11 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ 'vim': [['^[" \t]*\\', '', '^top']],
       \ })
 
+" [normal, visual start, visual end]
 let s:s_ranges_mod = {
-      \ 'default': ['', '', ''],
-      \ '^top': ['+1', '+1' ,''],
-      \ '^bottom': ['', '', '-1'],
+      \ 'default': [0,  0, 0],
+      \    '^top': [+1, +1 ,0],
+      \ '^bottom': [0,  0, -1],
       \ }
 
 function! SandJoin#do(line1, ...) abort
@@ -50,6 +51,10 @@ function! SandJoin#do(line1, ...) abort
     call s:s_in_loop(s_pat, line1, line2)
   else
     call s:s_in_range(s_pat)
+  endif
+
+  if line1 == line2
+    let line2 += 1
   endif
 
   exe line1 ',' line2 'join'
@@ -68,16 +73,14 @@ function! s:s_in_range(s_pat, line1, line2) abort
 
   let range = a:line1 == a:line2
         \ ? a:line1 + s_range[0]
-        \ : a:line1 + s_range[1] .','. a:line2 + s_range[2]
+        \ : (a:line1 + s_range[1]) .','. (a:line2 + s_range[2])
 
   call s:s_as_patterns(a:s_pat, range)
 endfunction
 
-function! s:s_as_patterns(s_pat, ...) abort
+function! s:s_as_patterns(s_pat, range) abort
   let flag = a:s_pat[2] =~# '\u' ? 'g' : ''
-  let range = a:0 > 0 ? a:1 : ''
-
-  exe range 's/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
+  exe a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
 endfunction
 
 " restore 'cpoptions' {{{1
