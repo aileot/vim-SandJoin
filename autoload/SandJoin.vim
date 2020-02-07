@@ -82,14 +82,14 @@ function! s:s_as_patterns(s_pat, range) abort
   exe 'keeppatterns' a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
 endfunction
 
-function! s:J_in_range(key) abort "{{{1
+function! s:J_in_range(cmd) abort "{{{1
   " reset pos of cursor to the top in related range
   exe s:line1
 
-  let l:key = a:key ==# '' ? 'J' : a:key
+  let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
   let cnt = s:line2 - s:line1
   while cnt
-    exe 'norm!' l:key
+    exe cmd
     let cnt -= 1
   endwhile
 endfunction

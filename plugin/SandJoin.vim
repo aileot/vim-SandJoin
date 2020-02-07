@@ -35,10 +35,10 @@ set cpo&vim
 command! -bar -range -nargs=? SandJoin
       \ :call SandJoin#do("<line1>", "<line2>", <q-args>)
 
-nnoremap <silent> <Plug>(SandJoin-J)  :SandJoin J<cr>
-xnoremap <silent> <Plug>(SandJoin-J)  :SandJoin J<cr>
-nnoremap <silent> <Plug>(SandJoin-gJ) :SandJoin gJ<cr>
-xnoremap <silent> <Plug>(SandJoin-gJ) :SandJoin gJ<cr>
+nnoremap <silent> <Plug>(SandJoin-J)  :SandJoin norm! J<cr>
+xnoremap <silent> <Plug>(SandJoin-J)  :SandJoin norm! J<cr>
+nnoremap <silent> <Plug>(SandJoin-gJ) :SandJoin norm! gJ<cr>
+xnoremap <silent> <Plug>(SandJoin-gJ) :SandJoin norm! gJ<cr>
 
 if !get(g:, 'SandJoin#no_default_mappings', 0)
   nmap J <Plug>(SandJoin-J)
