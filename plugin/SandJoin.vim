@@ -37,6 +37,11 @@ command! -bar -range SandJoin :call SandJoin#do("<line1>", "<line2>")
 nnoremap <silent> <Plug>(SandJoin) :<c-u>SandJoin<cr>
 xnoremap <silent> <Plug>(SandJoin) :SandJoin<cr>
 
+if !get(g:, 'SandJoin#no_default_mappings', 0)
+  nmap J <Plug>(SandJoin)
+  xmap J <Plug>(SandJoin)
+endif
+
 " restore 'cpoptions' {{{1
 let &cpo = s:save_cpo
 unlet s:save_cpo
