@@ -30,7 +30,7 @@ set cpo&vim
 "}}}1
 
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
-      \ 'bash': [['\$', '', '^bottom']],
+      \ 'bash': [['\\s*$', '', '^bottom']],
       \ 'vim': [['^[" \t]*\\', '', '^top']],
       \ })
 
