@@ -32,14 +32,19 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}
 
-command! -bar -range SandJoin :call SandJoin#do("<line1>", "<line2>")
+command! -bar -range -nargs=? SandJoin
+      \ :call SandJoin#do("<line1>", "<line2>", <q-args>)
 
-nnoremap <silent> <Plug>(SandJoin) :<c-u>SandJoin<cr>
-xnoremap <silent> <Plug>(SandJoin) :SandJoin<cr>
+nnoremap <silent> <Plug>(SandJoin-J)  :SandJoin J<cr>
+xnoremap <silent> <Plug>(SandJoin-J)  :SandJoin J<cr>
+nnoremap <silent> <Plug>(SandJoin-gJ) :SandJoin gJ<cr>
+xnoremap <silent> <Plug>(SandJoin-gJ) :SandJoin gJ<cr>
 
 if !get(g:, 'SandJoin#no_default_mappings', 0)
-  nmap J <Plug>(SandJoin)
-  xmap J <Plug>(SandJoin)
+  nmap J <Plug>(SandJoin-J)
+  xmap J <Plug>(SandJoin-J)
+  nmap gJ <Plug>(SandJoin-gJ)
+  xmap gJ <Plug>(SandJoin-gJ)
 endif
 
 " restore 'cpoptions' {{{1
