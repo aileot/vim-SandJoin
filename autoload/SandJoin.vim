@@ -30,46 +30,47 @@ set cpo&vim
 "}}}1
 
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
-      \ 'bash': [['\\s*$', '', '^bottom']],
-      \ 'vim': [['^[" \t]*\\', '', '^top']],
+      \ 'sh': [
+      \   ['\\s*$', '', '^bottom'],
+      \   ['^[# \t]*', '', '^top'],
+      \   ],
+      \ 'vim': ['^[" \t]*\\', '', '^top'],
       \ })
 
 " [normal, visual start, visual end]
 let s:s_ranges_mod = {
       \ 'default': [0,  0, 0],
-      \    '^top': [+1, +1 ,0],
+      \ '^top':    [+1, +1 ,0],
       \ '^bottom': [0,  0, -1],
       \ }
 
 function! SandJoin#do(line1, ...) abort
-  let line1 = eval(a:line1)
-  let line2 = a:0 > 0 ? eval(a:1) : line1
+  let s:line1 = eval(a:line1)
+  let s:line2 = a:0 > 0 ? eval(a:1) : s:line1 + 1
+  let s:line2 = s:line1 == s:line2 ? s:line2 + 1 : s:line2
 
   let s_pat = get(g:SandJoin#patterns, &ft, ['', ''])
 
   if type(s_pat[0]) == type([])
-    call s:s_in_loop(s_pat, line1, line2)
+    call s:s_in_loop(s_pat)
   else
     call s:s_in_range(s_pat)
   endif
 
-  call s:join_in_range(line1, line2)
+  call s:join_in_range()
 endfunction
 
-function! s:s_in_loop(s_pat, line1, line2) abort
+function! s:s_in_loop(s_pat) abort
   for pat in a:s_pat
-    call s:s_in_range(pat, a:line1, a:line2)
+    call s:s_in_range(pat)
   endfor
 endfunction
 
-function! s:s_in_range(s_pat, line1, line2) abort
-  let range = ''
-  let position = get(a:s_pat, 2, 'default')
-  let s_range = get(s:s_ranges_mod, position)
+function! s:s_in_range(s_pat) abort
+  let mod = get(a:s_pat, 2, 'default')
+  let s_range = s:s_ranges_mod[mod]
 
-  let range = a:line1 == a:line2
-        \ ? a:line1 + s_range[0]
-        \ : (a:line1 + s_range[1]) .','. (a:line2 + s_range[2])
+  let range = (s:line1 + s_range[1]) .','. (s:line2 + s_range[2])
 
   call s:s_as_patterns(a:s_pat, range)
 endfunction
@@ -80,14 +81,14 @@ function! s:s_as_patterns(s_pat, range) abort
   exe 'keeppatterns' a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
 endfunction
 
-function! s:join_in_range(line1, line2) abort "{{{1
-  let line1 = a:line1
-  let line2 = a:line1 == a:line2 ? a:line2 + 1 : a:line2
+function! s:join_in_range() abort "{{{1
+  " reset pos of cursor to the top in related range
+  exe s:line1
 
-  exe line1
-  while line2 - line1
+  let cnt = s:line2 - s:line1
+  while cnt
     norm! J
-    let line1 += 1
+    let cnt -= 1
   endwhile
 endfunction
 
