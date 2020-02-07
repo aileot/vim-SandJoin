@@ -31,33 +31,43 @@ set cpo&vim
 
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ 'sh': [
-      \   ['\\s*$', '', '^bottom'],
+      \   ['[\\ \t]*$', '', '^bottom'],
       \   ['^[# \t]*', '', '^top'],
       \   ],
-      \ 'vim': ['^[" \t]*\\', '', '^top'],
+      \ 'vim': ['^[" \t\\]*', '', '^top'],
       \ })
 
-" [normal, visual start, visual end]
+" the lists corresponds to ["v", "'>"]; help at line()
 let s:s_ranges_mod = {
-      \ 'default': [0,  0, 0],
-      \ '^top':    [+1, +1 ,0],
-      \ '^bottom': [0,  0, -1],
+      \ 'default': [0, 0],
+      \ '^top':    [+1 ,0],
+      \ '^bottom': [0, -1],
       \ }
 
-function! SandJoin#do(line1, ...) abort
-  let s:line1 = eval(a:line1)
-  let s:line2 = a:0 > 0 ? eval(a:1) : s:line1 + 1
-  let s:line2 = s:line1 == s:line2 ? s:line2 + 1 : s:line2
+function! SandJoin#do(line1, line2, key) abort
+  call s:set_range(a:line1, a:line2)
+  call s:s_in_range()
+  call s:J_in_range(a:key)
+endfunction
 
-  let s_pat = get(g:SandJoin#patterns, &ft, ['', ''])
+function! s:set_range(line1, line2) abort "{{{1
+  let s:line1 = a:line1
+  let s:line2 = a:line1 == a:line2 ? a:line2 + 1 : a:line2
+endfunction
+
+function! s:s_in_range(...) abort "{{{1
+  let s_pat = a:0 > 0 ? a:1 : get(g:SandJoin#patterns, &ft, ['', ''])
 
   if type(s_pat[0]) == type([])
     call s:s_in_loop(s_pat)
-  else
-    call s:s_in_range(s_pat)
+    return
   endif
 
-  call s:join_in_range()
+  let label = get(s_pat, 2, 'default')
+  let diff = s:s_ranges_mod[label]
+
+  let range = (s:line1 + diff[0]) .','. (s:line2 + diff[1])
+  call s:s_as_patterns(s_pat, range)
 endfunction
 
 function! s:s_in_loop(s_pat) abort
@@ -66,28 +76,20 @@ function! s:s_in_loop(s_pat) abort
   endfor
 endfunction
 
-function! s:s_in_range(s_pat) abort
-  let mod = get(a:s_pat, 2, 'default')
-  let s_range = s:s_ranges_mod[mod]
-
-  let range = (s:line1 + s_range[1]) .','. (s:line2 + s_range[2])
-
-  call s:s_as_patterns(a:s_pat, range)
-endfunction
-
 function! s:s_as_patterns(s_pat, range) abort
   let flag  = 'e'
-  let flag .= a:s_pat[2] =~# '\u' ? 'g' : ''
+  let flag .= get(a:s_pat, 2) =~# '\u' ? 'g' : ''
   exe 'keeppatterns' a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
 endfunction
 
-function! s:join_in_range() abort "{{{1
+function! s:J_in_range(cmd) abort "{{{1
   " reset pos of cursor to the top in related range
   exe s:line1
 
+  let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
   let cnt = s:line2 - s:line1
   while cnt
-    norm! J
+    exe cmd
     let cnt -= 1
   endwhile
 endfunction
