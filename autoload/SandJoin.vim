@@ -31,7 +31,7 @@ set cpo&vim
 
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ 'sh': [
-      \   ['\\s*$', '', '^bottom'],
+      \   ['[\\ \t]*$', '', '^bottom'],
       \   ['^[# \t]*', '', '^top'],
       \   ],
       \ 'vim': ['^[" \t\\]*', '', '^top'],
