@@ -57,7 +57,7 @@ function! SandJoin#do(line1, ...) abort
     let line2 += 1
   endif
 
-  exe line1 ',' line2 'join'
+  exe line1 ',' line2 'norm! J'
 endfunction
 
 function! s:s_in_loop(s_pat, line1, line2) abort
@@ -79,8 +79,9 @@ function! s:s_in_range(s_pat, line1, line2) abort
 endfunction
 
 function! s:s_as_patterns(s_pat, range) abort
-  let flag = a:s_pat[2] =~# '\u' ? 'g' : ''
-  exe a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
+  let flag  = 'e'
+  let flag .= a:s_pat[2] =~# '\u' ? 'g' : ''
+  exe 'keeppatterns' a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
 endfunction
 
 " restore 'cpoptions' {{{1
