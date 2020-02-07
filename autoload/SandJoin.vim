@@ -53,7 +53,7 @@ function! SandJoin#do(line1, ...) abort
   if type(s_pat[0]) == type([])
     call s:s_in_loop(s_pat, line1, line2)
   else
-    call s:s_in_range(s_pat)
+    call s:s_in_range(s_pat, line1, line2)
   endif
 
   call s:join_in_range(line1, line2)
