@@ -32,7 +32,7 @@ set cpo&vim
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ 'sh': [
       \   ['\\s*$', '', '^bottom'],
-      \   ['^[# \t]', '', '^top'],
+      \   ['^[# \t]*', '', '^top'],
       \   ],
       \ 'vim': ['^[" \t]*\\', '', '^top'],
       \ })
@@ -45,27 +45,27 @@ let s:s_ranges_mod = {
       \ }
 
 function! SandJoin#do(line1, ...) abort
-  let line1 = eval(a:line1)
-  let line2 = a:0 > 0 ? eval(a:1) : line1
+  let s:line1 = eval(a:line1)
+  let s:line2 = a:0 > 0 ? eval(a:1) : s:line1
 
   let s_pat = get(g:SandJoin#patterns, &ft, ['', ''])
 
   if type(s_pat[0]) == type([])
-    call s:s_in_loop(s_pat, line1, line2)
+    call s:s_in_loop(s_pat)
   else
-    call s:s_in_range(s_pat, line1, line2)
+    call s:s_in_range(s_pat)
   endif
 
-  call s:join_in_range(line1, line2)
+  call s:join_in_range()
 endfunction
 
-function! s:s_in_loop(s_pat, line1, line2) abort
+function! s:s_in_loop(s_pat) abort
   for pat in a:s_pat
     call s:s_in_range(pat, a:line1, a:line2)
   endfor
 endfunction
 
-function! s:s_in_range(s_pat, line1, line2) abort
+function! s:s_in_range(s_pat) abort
   let range = ''
   let position = get(a:s_pat, 2, 'default')
   let s_range = get(s:s_ranges_mod, position)
@@ -83,14 +83,14 @@ function! s:s_as_patterns(s_pat, range) abort
   exe 'keeppatterns' a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
 endfunction
 
-function! s:join_in_range(line1, line2) abort "{{{1
-  let line1 = a:line1
-  let line2 = a:line1 == a:line2 ? a:line2 + 1 : a:line2
+function! s:join_in_range(s:line1, s:line2) abort "{{{1
+  let s:line1 = a:line1
+  let s:line2 = a:line1 == a:line2 ? a:line2 + 1 : a:line2
 
-  exe line1
-  while line2 - line1
+  exe s:line1
+  while s:line2 - s:line1
     norm! J
-    let line1 += 1
+    let s:line1 += 1
   endwhile
 endfunction
 
