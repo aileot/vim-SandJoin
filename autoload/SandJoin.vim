@@ -29,6 +29,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}1
 
+" `gJ` doesn't include white spaces and tabs though `J` ignore them to join
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ '_': ["'^['. matchstr(&commentstring, '.*\ze%s') .' \t]*'", '', '^top'],
       \ 'sh': ['[\\ \t]*$', '', '^bottom'],
