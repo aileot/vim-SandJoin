@@ -2,7 +2,7 @@
 
 Try missing 'J' especially for '\' in Vimscript and Shellscript
 
-Remove leading tabs and white spaces on 'gJ'
+Ignore leading tabs and white spaces on 'gJ'
 
 ## Installation
 
