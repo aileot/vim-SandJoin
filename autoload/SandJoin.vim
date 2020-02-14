@@ -44,10 +44,32 @@ let s:s_ranges_mod = {
       \ '^bottom': [0, -1],
       \ }
 
-function! SandJoin#do(line1, line2, key) abort
+function! SandJoin#do(line1, line2, cmd) abort
+  call SandJoin#substitute(a:line1, a:line2)
+  call SandJoin#join(a:cmd)
+endfunction
+
+function! SandJoin#substitute(line1, line2) abort
   call s:set_range(a:line1, a:line2)
   call s:s_in_range()
-  call s:J_in_range(a:key)
+endfunction
+
+function! SandJoin#join(cmd, ...) abort
+  if a:0 == 2
+    call s:set_range(a:1, a:2)
+  elseif a:0 > 0
+    throw 'Invalid arguments: accepts either 0 or 2 arguments'
+  endif
+
+  " reset pos of cursor to the top in related range
+  exe s:line1
+
+  let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
+  let cnt = s:line2 - s:line1
+  while cnt
+    exe cmd
+    let cnt -= 1
+  endwhile
 endfunction
 
 function! s:set_range(line1, line2) abort "{{{1
