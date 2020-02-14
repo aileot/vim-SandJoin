@@ -106,12 +106,12 @@ function! s:s_in_loop(patterns) abort
 endfunction
 
 function! s:s_as_patterns(s_pat, range) abort
-  let flag  = 'e'
-  let flag .= get(a:s_pat, 2) =~# '\u' ? 'g' : ''
+  let flags  = 'e'
+  let flags .= get(a:s_pat, 2) =~# '\u' ? 'g' : ''
 
   let before = s:eval_pat(a:s_pat[0])
   let after  = s:eval_pat(a:s_pat[1])
-  exe 'silent keeppatterns' a:range .'s/'. before .'/'. after .'/'. flag
+  exe 'silent keeppatterns' a:range .'s/'. before .'/'. after .'/'. flags
 endfunction
 
 function! s:eval_pat(pat) abort
