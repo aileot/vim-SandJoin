@@ -54,6 +54,10 @@ function! SandJoin#substitute(line1, line2) abort
 endfunction
 
 function! SandJoin#join(cmd, ...) abort
+  " this function is available even when a:cmd is unrelated to 'J/gJ' inspite
+  " of the name; the name only indicates the role in the standard usage of
+  " SandJoin#do().
+
   if a:0 == 2
     call s:set_range(a:1, a:2)
   elseif a:0 > 0
@@ -66,6 +70,7 @@ function! SandJoin#join(cmd, ...) abort
   let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
   let cnt = s:line2 - s:line1
   while cnt
+    " keep cursor on top of the range to join all into a line
     exe cmd
     let cnt -= 1
   endwhile
