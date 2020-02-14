@@ -30,57 +30,101 @@ set cpo&vim
 "}}}1
 
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
-      \ 'bash': [['\$', '', '^bottom']],
-      \ 'vim': [['^[" \t]*\\', '', '^top']],
+      \ '_': ["'^['. matchstr(&commentstring, '.*\ze%s') .' \t]*'", '', '^top'],
+      \ 'sh': ['[\\ \t]*$', '', '^bottom'],
+      \ 'vim': ['^[" \t\\]*', '', '^top'],
       \ })
 
-" [normal, visual start, visual end]
+" the lists corresponds to ["v", "'>"]; help at line()
 let s:s_ranges_mod = {
-      \ 'default': [0,  0, 0],
-      \    '^top': [+1, +1 ,0],
-      \ '^bottom': [0,  0, -1],
+      \ 'default': [0, 0],
+      \ '^top':    [+1, 0],
+      \ '^bottom': [0, -1],
       \ }
 
-function! SandJoin#do(line1, ...) abort
-  let line1 = eval(a:line1)
-  let line2 = a:0 > 0 ? eval(a:1) : line1
-
-  let s_pat = get(g:SandJoin#patterns, &ft, ['', ''])
-
-  if type(s_pat[0]) == type([])
-    call s:s_in_loop(s_pat, line1, line2)
-  else
-    call s:s_in_range(s_pat)
-  endif
-
-  if line1 == line2
-    let line2 += 1
-  endif
-
-  exe line1 ',' line2 'join'
+function! SandJoin#do(cmd, line1, line2) abort
+  call SandJoin#substitute(a:line1, a:line2)
+  call SandJoin#join(a:cmd)
 endfunction
 
-function! s:s_in_loop(s_pat, line1, line2) abort
-  for pat in a:s_pat
-    call s:s_in_range(pat, a:line1, a:line2)
-  endfor
+function! SandJoin#substitute(line1, line2) abort
+  call s:set_range(a:line1, a:line2)
+  let pat = s:set_s_pat()
+  call s:s_in_range(pat)
 endfunction
 
-function! s:s_in_range(s_pat, line1, line2) abort
-  let range = ''
-  let position = get(a:s_pat, 2, 'default')
-  let s_range = get(s:s_ranges_mod, position)
+function! SandJoin#join(cmd, ...) abort
+  " this function is available even when a:cmd is unrelated to 'J/gJ' inspite
+  " of the name; the name only indicates the role in the standard usage of
+  " SandJoin#do().
 
-  let range = a:line1 == a:line2
-        \ ? a:line1 + s_range[0]
-        \ : (a:line1 + s_range[1]) .','. (a:line2 + s_range[2])
+  if a:0 == 2
+    call s:set_range(a:1, a:2)
+  elseif a:0 > 0
+    throw 'Invalid arguments: accepts either 0 or 2 arguments'
+  endif
 
+  " reset pos of cursor to the top in related range
+  exe s:line1
+
+  let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
+  let cnt = s:line2 - s:line1
+  while cnt
+    " keep cursor on top of the range to join all into a line
+    exe cmd
+    let cnt -= 1
+  endwhile
+endfunction
+
+function! s:set_range(line1, line2) abort "{{{1
+  let s:line1 = a:line1
+  let s:line2 = a:line1 == a:line2 ? a:line2 + 1 : a:line2
+endfunction
+
+function! s:set_s_pat() abort "{{{1
+  let ret = get(g:SandJoin#patterns, &ft, ['', ''])
+
+  if get(g:SandJoin#patterns, '_') isnot# 0
+    return [ g:SandJoin#patterns['_'], ret ]
+  endif
+
+  return ret
+endfunction
+
+function! s:s_in_range(s_pat) abort "{{{1
+  if type(a:s_pat[0]) == type([])
+    call s:s_in_loop(a:s_pat)
+    return
+  endif
+
+  let label = get(a:s_pat, 2, 'default')
+  let diff = s:s_ranges_mod[label]
+
+  let range = (s:line1 + diff[0]) .','. (s:line2 + diff[1])
   call s:s_as_patterns(a:s_pat, range)
 endfunction
 
+function! s:s_in_loop(patterns) abort
+  for pat in a:patterns
+    call s:s_in_range(pat)
+  endfor
+endfunction
+
 function! s:s_as_patterns(s_pat, range) abort
-  let flag = a:s_pat[2] =~# '\u' ? 'g' : ''
-  exe a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
+  let flags  = 'e'
+  let flags .= get(a:s_pat, 2) =~# '\u' ? 'g' : ''
+
+  let before = s:eval_pat(a:s_pat[0])
+  let after  = s:eval_pat(a:s_pat[1])
+  exe 'silent keeppatterns' a:range .'s/'. before .'/'. after .'/'. flags
+endfunction
+
+function! s:eval_pat(pat) abort
+  try
+    return eval(a:pat)
+  catch
+    return a:pat
+  endtry
 endfunction
 
 " restore 'cpoptions' {{{1
