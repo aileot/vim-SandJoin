@@ -33,7 +33,7 @@ set cpo&vim
 "}}}
 
 command! -bar -range -nargs=? SandJoin
-      \ :call SandJoin#do("<line1>", "<line2>", <q-args>)
+      \ :call SandJoin#do(<q-args>, "<line1>", "<line2>")
 
 nnoremap <silent> <Plug>(SandJoin-J)  :SandJoin norm! J<cr>
 xnoremap <silent> <Plug>(SandJoin-J)  :SandJoin norm! J<cr>
