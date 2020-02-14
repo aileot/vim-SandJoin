@@ -41,7 +41,6 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
 
 " the lists corresponds to ["v", "'>"]; help at line()
 let s:s_ranges_mod = {
-      \ 'default': [0, 0],
       \ '^top':    [+1, 0],
       \ '^bottom': [0, -1],
       \ }
@@ -101,8 +100,8 @@ function! s:s_in_range(s_pat) abort "{{{1
     return
   endif
 
-  let label = get(a:s_pat, 2, 'default')
-  let diff = s:s_ranges_mod[label]
+  let label = get(a:s_pat, 2)
+  let diff  = get(s:s_ranges_mod, tolower(label), [0, 0])
 
   let range = (s:line1 + diff[0]) .','. (s:line2 + diff[1])
   call s:s_as_patterns(a:s_pat, range)
@@ -125,7 +124,7 @@ endfunction
 
 function! s:eval_pat(pat) abort
   try
-    return eval(a:pat)
+    return string(eval(a:pat))
   catch
     return a:pat
   endtry
