@@ -38,7 +38,7 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
 " the lists corresponds to ["v", "'>"]; help at line()
 let s:s_ranges_mod = {
       \ 'default': [0, 0],
-      \ '^top':    [+1 ,0],
+      \ '^top':    [+1, 0],
       \ '^bottom': [0, -1],
       \ }
 
