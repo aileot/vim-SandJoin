@@ -1,8 +1,8 @@
 # vim-SandJoin
 
-Try missing 'J' especially for '\' in Vimscript and Shellscript
+Try missing `J` especially for `\` in Vimscript and Shellscript
 
-Ignore leading tabs and white spaces on 'gJ'
+Ignore leading tabs and white spaces on `gJ`
 
 ## Installation
 
@@ -17,7 +17,7 @@ call dein#add('kaile256/vim-SandJoin')
 ## Usage
 
 This plugin makes a set of mappings to `J` and `gJ` unless
-`g:SandJoin#no_default_mappings` is set to 1.
+`g:SandJoin#no_default_mappings` is set to `1`.
 
 ```vim
 " default
