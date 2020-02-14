@@ -44,7 +44,7 @@ let s:s_ranges_mod = {
       \ '^bottom': [0, -1],
       \ }
 
-function! SandJoin#do(line1, line2, cmd) abort
+function! SandJoin#do(cmd, line1, line2) abort
   call SandJoin#substitute(a:line1, a:line2)
   call SandJoin#join(a:cmd)
 endfunction
