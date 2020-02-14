@@ -2,7 +2,7 @@
 
 Try missing 'J' especially for '\' in Vimscript and Shellscript
 
-Remove leading tabs and white spaces on 'gJ'
+Ignore leading tabs and white spaces on 'gJ'
 
 ## Installation
 
@@ -44,7 +44,7 @@ The variable, `g:SandJoin#patterns`, is internally used in `SandJoin#substitute(
 
 1. The values should be a list in this order, `["before", "after", "label"]`.
 
-   1. Both `"before"` and `"after"` are used as `s/"before"/"after"`
+   1. Both `"before"` and `"after"` are used as `s/"before"/"after"`.
       They will be respectively evaluated if possible.
 
    1. The third value, `"label"`, should be one of `['^top', '^bottom', 'default']`.
