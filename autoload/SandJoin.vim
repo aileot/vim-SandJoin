@@ -76,13 +76,13 @@ function! s:set_range(line1, line2) abort "{{{1
   let s:line2 = a:line1 == a:line2 ? a:line2 + 1 : a:line2
 endfunction
 
-function! s:set_s_pat() abort
+function! s:set_s_pat() abort "{{{1
   let ret = get(g:SandJoin#patterns, &ft, ['', ''])
+
   if get(g:SandJoin#patterns, '_') isnot# 0
-    let ret = [ g:SandJoin#patterns['_'], ret ]
+    return [ g:SandJoin#patterns['_'], ret ]
   endif
 
-  echomsg string(ret)
   return ret
 endfunction
 
