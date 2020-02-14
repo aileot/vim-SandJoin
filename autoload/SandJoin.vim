@@ -79,19 +79,7 @@ endfunction
 function! s:s_as_patterns(s_pat, range) abort
   let flag  = 'e'
   let flag .= get(a:s_pat, 2) =~# '\u' ? 'g' : ''
-  exe 'keeppatterns' a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
-endfunction
-
-function! s:J_in_range(cmd) abort "{{{1
-  " reset pos of cursor to the top in related range
-  exe s:line1
-
-  let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
-  let cnt = s:line2 - s:line1
-  while cnt
-    exe cmd
-    let cnt -= 1
-  endwhile
+  exe 'silent keeppatterns' a:range .'s/'. a:s_pat[0] .'/'. a:s_pat[1] .'/'. flag
 endfunction
 
 " restore 'cpoptions' {{{1
