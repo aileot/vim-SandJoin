@@ -85,9 +85,10 @@ function! s:set_range(line1, line2) abort "{{{1
 endfunction
 
 function! s:set_s_pat() abort "{{{1
-  let ret = get(g:SandJoin#patterns, &ft, ['', ''])
+  let patterns = get(b:, 'SandJoin_patterns', g:SandJoin#patterns)
+  let ret = get(patterns, &ft, ['', ''])
 
-  if get(g:SandJoin#patterns, '_') isnot# 0
+  if get(patterns, '_') isnot# 0
     return [ g:SandJoin#patterns['_'], ret ]
   endif
 
