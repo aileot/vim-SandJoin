@@ -32,7 +32,10 @@ xmap gJ <Plug>(SandJoin-gJ)
 ```vim
 " default
 let g:SandJoin#patterns = {
-      \ '_': ["'^['. matchstr(&commentstring, '.*\ze%s') .' \t]*'", '', '^top'],
+      \ '_': [
+      \   ['[^ \t]\zs\s\+', ' ', 'GLOBAL'],
+      \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
+      \ ],
       \ 'sh': ['[\\ \t]*$', '', '^bottom'],
       \ 'vim': ['^[" \t\\]*', '', '^top'],
       \ }
