@@ -33,7 +33,6 @@ set cpo&vim
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ '_': [
       \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
-      \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
       \ ],
       \ 'sh': [
       \   ['\(^\|[;\\]\|do\|then\)\@<!$', '; ', '^bottom'],
