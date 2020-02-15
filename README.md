@@ -54,7 +54,8 @@ The variable, `g:SandJoin#patterns`, is internally used in `SandJoin#substitute(
    1. Both `"before"` and `"after"` are used as `:s/"before"/"after"`.
       They will be respectively evaluated if possible.
 
-   1. The third value, `"label"`, can be one of `['^top', '^bottom', 'GLOBAL']`.
+   1. The third value, `"label"`, can be
+      one of `'^top'`, `'^bottom'` and `'GLOBAL'`
 
       1. The values, `'^top'` and `'^bottom'`, means
          `:s` except top/bottom line in the range.
