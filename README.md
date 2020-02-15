@@ -1,8 +1,8 @@
 # vim-SandJoin
 
-Try missing `J` especially for `\` in Vimscript and Shellscript
+For `J`, join lines without left-behind `\` in Vimscript and Shellscript
 
-Ignore leading tabs and white spaces on `gJ`
+For `gJ`, join lines without leading tabs and white spaces
 
 ## Installation
 
