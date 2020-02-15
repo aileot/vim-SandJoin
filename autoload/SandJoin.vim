@@ -122,7 +122,8 @@ endfunction
 
 function! s:eval_pat(pat) abort
   try
-    return string(eval(a:pat))
+    let ret = eval(a:pat)
+    return type(ret) == type('') ? ret : string(ret)
   catch
     return a:pat
   endtry
