@@ -35,8 +35,14 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
       \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
       \ ],
-      \ 'sh': ['[ \t\\]*$', '', '^bottom'],
-      \ 'vim': ['^[" \t\\]*', '', '^top'],
+      \ 'sh': [
+      \   ['\(^\|[;\\]\|do\|then\)\@<!$', '; ', '^bottom'],
+      \   ['[ \t\\]*$', '', '^bottom'],
+      \ ],
+      \ 'vim': [
+      \   ['\(^\|^\s*["\\].*\)\@<!\zs$', ' | ', '^bottom'],
+      \   ['^[ \t\\]*', '', '^top'],
+      \ ],
       \ })
 
 " the lists corresponds to ["v", "'>"]; help at line()
