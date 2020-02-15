@@ -31,14 +31,16 @@ set cpo&vim
 
 " `gJ` doesn't include white spaces and tabs though `J` ignore them to join
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
-      \ '_': ["'^['. matchstr(&commentstring, '.*\ze%s') .' \t]*'", '', '^top'],
+      \ '_': [
+      \   ['[^ \t]\zs\s\+', ' ', 'GLOBAL'],
+      \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
+      \ ],
       \ 'sh': ['[\\ \t]*$', '', '^bottom'],
       \ 'vim': ['^[" \t\\]*', '', '^top'],
       \ })
 
 " the lists corresponds to ["v", "'>"]; help at line()
 let s:s_ranges_mod = {
-      \ 'default': [0, 0],
       \ '^top':    [+1, 0],
       \ '^bottom': [0, -1],
       \ }
@@ -98,8 +100,8 @@ function! s:s_in_range(s_pat) abort "{{{1
     return
   endif
 
-  let label = get(a:s_pat, 2, 'default')
-  let diff = s:s_ranges_mod[label]
+  let label = get(a:s_pat, 2)
+  let diff  = get(s:s_ranges_mod, tolower(label), [0, 0])
 
   let range = (s:line1 + diff[0]) .','. (s:line2 + diff[1])
   call s:s_as_patterns(a:s_pat, range)
@@ -112,17 +114,16 @@ function! s:s_in_loop(patterns) abort
 endfunction
 
 function! s:s_as_patterns(s_pat, range) abort
-  let flags  = 'e'
-  let flags .= get(a:s_pat, 2) =~# '\u' ? 'g' : ''
-
+  let flags = get(a:s_pat, 2) =~# '\u' ? 'g' : ''
   let before = s:eval_pat(a:s_pat[0])
   let after  = s:eval_pat(a:s_pat[1])
-  exe 'silent keeppatterns' a:range .'s/'. before .'/'. after .'/'. flags
+  exe 'silent! keeppatterns' a:range .'s/'. before .'/'. after .'/'. flags
 endfunction
 
 function! s:eval_pat(pat) abort
   try
-    return eval(a:pat)
+    let ret = eval(a:pat)
+    return type(ret) == type('') ? ret : string(ret)
   catch
     return a:pat
   endtry
