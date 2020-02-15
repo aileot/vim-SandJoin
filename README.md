@@ -2,7 +2,23 @@
 
 For `J`, join lines without left-behind `\` in Vimscript and Shellscript
 
+| J (with vim-SandJoin)                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------- |
+| ![vim-SandJoin-plugin](https://user-images.githubusercontent.com/46470475/74579672-abfce380-4fdf-11ea-9e50-247404c8c410.gif) |
+
+| J (default)                                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------------------- |
+| ![vim-SandJoin-default](https://user-images.githubusercontent.com/46470475/74579673-ac957a00-4fdf-11ea-8dca-d27cc0d8b0c9.gif) |
+
 For `gJ`, join lines without leading tabs and white spaces
+
+| gJ (with vim-SandJoin)                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------- |
+| ![vim-SandJoin-plugin-gJ](https://user-images.githubusercontent.com/46470475/74579897-c5069400-4fe1-11ea-87e9-e92efa80bd15.gif) |
+
+| gJ (default)                                                                                                                     |
+| -------------------------------------------------------------------------------------------------------------------------------- |
+| ![vim-SandJoin-default-gJ](https://user-images.githubusercontent.com/46470475/74579898-c637c100-4fe1-11ea-88f4-97bb902978da.gif) |
 
 ## Installation
 
