@@ -39,7 +39,7 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \   ['[ \t\\]*$', '', '^bottom'],
       \ ],
       \ 'vim': [
-      \   ['\(^\|^\s*["\\].*\)\@<!\zs$', ' | ', '^bottom'],
+      \   ['^\s*\([^"| \t\\]\)\s*', ' | \1', '^top'],
       \   ['^[ \t\\]*', '', '^top'],
       \ ],
       \ })
