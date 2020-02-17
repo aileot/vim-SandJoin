@@ -32,11 +32,16 @@ set cpo&vim
 " `gJ` doesn't include white spaces and tabs though `J` ignore them to join
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ '_': [
-      \   ['[^ \t]\zs\s\+', ' ', 'GLOBAL'],
-      \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
+      \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
       \ ],
-      \ 'sh': ['[\\ \t]*$', '', '^bottom'],
-      \ 'vim': ['^[" \t\\]*', '', '^top'],
+      \ 'sh': [
+      \   ['\(^\|[;\\]\|do\|then\)\@<!$', '; ', '^bottom'],
+      \   ['[ \t\\]*$', '', '^bottom'],
+      \ ],
+      \ 'vim': [
+      \   ['^\s*\([^"| \t\\]\)\s*', ' | \1', '^top'],
+      \   ['^[ \t\\]*', '', '^top'],
+      \ ],
       \ })
 
 " the lists corresponds to ["v", "'>"]; help at line()
