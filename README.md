@@ -46,6 +46,8 @@ xmap gJ <Plug>(SandJoin-gJ)
 ### Usage of `g:SandJoin#patterns`
 
 ```vim
+set nojoinspaces " recommended (default: on)
+
 " default
 let g:SandJoin#patterns = {
       \ '_': [
