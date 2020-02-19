@@ -46,14 +46,20 @@ xmap gJ <Plug>(SandJoin-gJ)
 ### Usage of `g:SandJoin#patterns`
 
 ```vim
+set nojoinspaces " recommended (default: on)
+
 " default
 let g:SandJoin#patterns = {
       \ '_': [
-      \   ['[^ \t]\zs\s\+', ' ', 'GLOBAL'],
-      \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
+      \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
       \ ],
-      \ 'sh': ['[\\ \t]*$', '', '^bottom'],
-      \ 'vim': ['^[" \t\\]*', '', '^top'],
+      \ 'sh': [
+      \   ['\(^\|[;\\]\|do\|then\)\@<!$', '; ', '^bottom'],
+      \   ['[ \t\\]*$', '', '^bottom'],
+      \ ],
+      \ 'vim': [
+      \   ['^\s*\([^"| \t\\]\)\s*', ' | \1', '^top'],
+      \   ['^[ \t\\]*', '', '^top'],
       \ }
 ```
 
