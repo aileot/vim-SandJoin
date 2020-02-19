@@ -4,11 +4,14 @@ set cpo&vim
 "}}}1
 
 function! SandJoin#wrapper#gJ(cmd) abort range
-  let b:SandJoin_patterns = {
-        \ '_': [
-        \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
-        \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
-        \ ]}
+  let b:SandJoin_patterns = [
+        \ ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
+        \ ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
+        \ ]
+
+  if get(g:SandJoin#patterns, &ft) isnot# 0
+    let b:SandJoin_patterns = [ b:SandJoin_patterns, g:SandJoin#patterns[&ft] ]
+  endif
 
   exe a:firstline ',' a:lastline 'SandJoin norm! gJ'
 
