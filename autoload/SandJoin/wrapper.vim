@@ -4,6 +4,7 @@ set cpo&vim
 "}}}1
 
 function! SandJoin#wrapper#gJ(cmd) abort range
+  let save_pat = get(b:, 'SandJoin_patterns', [])
   let b:SandJoin_patterns = [
         \ ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
         \ ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
@@ -15,7 +16,11 @@ function! SandJoin#wrapper#gJ(cmd) abort range
 
   exe a:firstline ',' a:lastline 'SandJoin norm! gJ'
 
-  unlet b:SandJoin_patterns
+  if empty(save_pat)
+    unlet b:SandJoin_patterns
+  else
+    let b:SandJoin_patterns = save_pat
+  endif
 endfunction
 
 " restore 'cpoptions' {{{1
