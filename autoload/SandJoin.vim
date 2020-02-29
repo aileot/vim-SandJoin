@@ -35,11 +35,9 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
       \ ],
       \ 'sh': [
-      \   ['\(^\|[;\\]\|do\|then\)\@<!$', '; ', '^bottom'],
       \   ['[ \t\\]*$', '', '^bottom'],
       \ ],
       \ 'vim': [
-      \   ['^\s*\([^"| \t\\]\)\s*', ' | \1', '^top'],
       \   ['^[ \t\\]*', '', '^top'],
       \ ],
       \ })
