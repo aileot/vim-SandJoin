@@ -32,11 +32,14 @@ set cpo&vim
 " `gJ` doesn't include white spaces and tabs though `J` ignore them to join
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ '_': [
-      \   ['[^ \t]\zs\s\+', ' ', 'GLOBAL'],
-      \   ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
+      \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
       \ ],
-      \ 'sh': ['[\\ \t]*$', '', '^bottom'],
-      \ 'vim': ['^[" \t\\]*', '', '^top'],
+      \ 'sh': [
+      \   ['[ \t\\]*$', '', '^bottom'],
+      \ ],
+      \ 'vim': [
+      \   ['^[ \t\\]*', '', '^top'],
+      \ ],
       \ })
 
 " the lists corresponds to ["v", "'>"]; help at line()
@@ -50,33 +53,10 @@ function! SandJoin#do(cmd, line1, line2) abort
   call SandJoin#join(a:cmd)
 endfunction
 
-function! SandJoin#substitute(line1, line2) abort
+function! SandJoin#substitute(line1, line2) abort "{{{1
   call s:set_range(a:line1, a:line2)
   let pat = s:set_s_pat()
   call s:s_in_range(pat)
-endfunction
-
-function! SandJoin#join(cmd, ...) abort
-  " this function is available even when a:cmd is unrelated to 'J/gJ' inspite
-  " of the name; the name only indicates the role in the standard usage of
-  " SandJoin#do().
-
-  if a:0 == 2
-    call s:set_range(a:1, a:2)
-  elseif a:0 > 0
-    throw 'Invalid arguments: accepts either 0 or 2 arguments'
-  endif
-
-  " reset pos of cursor to the top in related range
-  exe s:line1
-
-  let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
-  let cnt = s:line2 - s:line1
-  while cnt
-    " keep cursor on top of the range to join all into a line
-    exe cmd
-    let cnt -= 1
-  endwhile
 endfunction
 
 function! s:set_range(line1, line2) abort "{{{1
@@ -85,8 +65,11 @@ function! s:set_range(line1, line2) abort "{{{1
 endfunction
 
 function! s:set_s_pat() abort "{{{1
-  let ret = get(g:SandJoin#patterns, &ft, ['', ''])
+  if get(b:, 'SandJoin_patterns') isnot# 0
+    return b:SandJoin_patterns
+  endif
 
+  let ret = get(g:SandJoin#patterns, &ft, ['', ''])
   if get(g:SandJoin#patterns, '_') isnot# 0
     return [ g:SandJoin#patterns['_'], ret ]
   endif
@@ -114,9 +97,10 @@ function! s:s_in_loop(patterns) abort
 endfunction
 
 function! s:s_as_patterns(s_pat, range) abort
-  let flags = get(a:s_pat, 2) =~# '\u' ? 'g' : ''
   let before = s:eval_pat(a:s_pat[0])
+  if empty(before) | return | endif
   let after  = s:eval_pat(a:s_pat[1])
+  let flags = get(a:s_pat, 2) =~# '\u' ? 'g' : ''
   exe 'silent! keeppatterns' a:range .'s/'. before .'/'. after .'/'. flags
 endfunction
 
@@ -127,6 +111,29 @@ function! s:eval_pat(pat) abort
   catch
     return a:pat
   endtry
+endfunction
+
+function! SandJoin#join(cmd, ...) abort "{{{1
+  " this function is available even when a:cmd is unrelated to 'J/gJ' inspite
+  " of the name; the name only indicates the role in the standard usage of
+  " SandJoin#do().
+
+  if a:0 == 2
+    call s:set_range(a:1, a:2)
+  elseif a:0 > 0
+    throw 'Invalid arguments: accepts either 0 or 2 arguments'
+  endif
+
+  " reset pos of cursor to the top in related range
+  exe s:line1
+
+  let cmd = a:cmd ==# '' ? 'norm! J' : a:cmd
+  let cnt = s:line2 - s:line1
+  while cnt
+    " keep cursor on top of the range to join all into a line
+    exe cmd
+    let cnt -= 1
+  endwhile
 endfunction
 
 " restore 'cpoptions' {{{1
