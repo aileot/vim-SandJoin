@@ -3,24 +3,34 @@ let s:save_cpo = &cpo
 set cpo&vim
 "}}}1
 
-function! SandJoin#wrapper#gJ(cmd) abort range
-  let save_pat = get(b:, 'SandJoin_patterns', [])
-  let b:SandJoin_patterns = [
-        \ ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
-        \ ["'^['. split(&commentstring, '%s')[0] .' \t]*'", '', '^top'],
-        \ ]
+let s:pat_empty  = ['', '']
+let s:pat_for_gJ = ['^[ \t\\]\+', '', '^top']
 
-  if get(g:SandJoin#patterns, &ft) isnot# 0
-    let b:SandJoin_patterns = [ b:SandJoin_patterns, g:SandJoin#patterns[&ft] ]
-  endif
+function! SandJoin#wrapper#gJ(cmd) abort range
+  let save_pat = get(b:, 'SandJoin_patterns', s:pat_empty)
+  call s:set_pat_for_gJ()
+  call add(b:SandJoin_patterns, save_pat)
 
   exe a:firstline ',' a:lastline 'SandJoin norm! gJ'
 
-  if empty(save_pat)
-    unlet b:SandJoin_patterns
+  if save_pat is s:pat_empty
+   unlet b:SandJoin_patterns
   else
-    let b:SandJoin_patterns = save_pat
+   let b:SandJoin_patterns = save_pat
   endif
+endfunction
+
+function! s:set_pat_for_gJ() abort
+  let pat = []
+  call add(pat, s:pat_for_gJ)
+
+  for l:key in ['_', &ft]
+    let p = get(g:SandJoin#patterns, l:key)
+    if empty(p) || p is s:pat_empty | continue | endif
+    call add(pat, p)
+  endfor
+
+  let b:SandJoin_patterns = pat
 endfunction
 
 " restore 'cpoptions' {{{1
