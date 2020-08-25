@@ -32,6 +32,9 @@ set cpo&vim
 " `gJ` doesn't include white spaces and tabs though `J` ignore them to join
 let s:remove_trailing_backslashes = ['[ \t\\]*$', '', '^bottom']
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
+      \ 'vim': [
+      \   ['^[ \t\\]*', '', '^top'],
+      \ ],
       \ 'sh': [
       \   s:remove_trailing_backslashes,
       \ ],
@@ -43,9 +46,6 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ ],
       \ 'dockerfile': [
       \   s:remove_trailing_backslashes,
-      \ ],
-      \ 'vim': [
-      \   ['^[ \t\\]*', '', '^top'],
       \ ],
       \ })
 unlet s:remove_trailing_backslashes
