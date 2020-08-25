@@ -35,6 +35,15 @@ let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
       \ 'sh': [
       \   s:remove_trailing_backslashes,
       \ ],
+      \ 'zsh': [
+      \   s:remove_trailing_backslashes,
+      \ ],
+      \ 'fish': [
+      \   s:remove_trailing_backslashes,
+      \ ],
+      \ 'dockerfile': [
+      \   s:remove_trailing_backslashes,
+      \ ],
       \ 'vim': [
       \   ['^[ \t\\]*', '', '^top'],
       \ ],
