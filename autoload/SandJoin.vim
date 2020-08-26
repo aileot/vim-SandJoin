@@ -30,17 +30,27 @@ set cpo&vim
 "}}}1
 
 " `gJ` doesn't include white spaces and tabs though `J` ignore them to join
+let s:remove_trailing_backslashes = ['[ \t\\]*$', '', '^bottom']
+let s:remove_line_continuation_symbols_of_Vim = ['^[ \t\\]*', '', '^top']
 let g:SandJoin#patterns = get(g:, 'SandJoin#patterns', {
-      \ '_': [
-      \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
+      \ 'vim': [
+      \   s:remove_line_continuation_symbols_of_Vim,
       \ ],
       \ 'sh': [
-      \   ['[ \t\\]*$', '', '^bottom'],
+      \   s:remove_trailing_backslashes,
       \ ],
-      \ 'vim': [
-      \   ['^[ \t\\]*', '', '^top'],
+      \ 'zsh': [
+      \   s:remove_trailing_backslashes,
+      \ ],
+      \ 'fish': [
+      \   s:remove_trailing_backslashes,
+      \ ],
+      \ 'dockerfile': [
+      \   s:remove_trailing_backslashes,
       \ ],
       \ })
+unlet s:remove_trailing_backslashes
+unlet s:remove_line_continuation_symbols_of_Vim
 
 " the lists corresponds to ["v", "'>"]; help at line()
 let s:s_ranges_mod = {

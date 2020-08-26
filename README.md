@@ -49,18 +49,27 @@ xmap gJ <Plug>(SandJoin-gJ)
 set nojoinspaces " recommended (default: on)
 
 " default
+let s:remove_trailing_backslashes = ['[ \t\\]*$', '', '^bottom']
+let s:remove_line_continuation_symbols_of_Vim = ['^[ \t\\]*', '', '^top']
 let g:SandJoin#patterns = {
-      \ '_': [
-      \   ['[^ \t\\]\zs\s\+', ' ', 'GLOBAL'],
+      \ 'vim': [
+      \   s:remove_line_continuation_symbols_of_Vim,
       \ ],
       \ 'sh': [
-      \   ['\(^\|[;\\]\|do\|then\)\@<!$', '; ', '^bottom'],
-      \   ['[ \t\\]*$', '', '^bottom'],
+      \   s:remove_trailing_backslashes,
       \ ],
-      \ 'vim': [
-      \   ['^\s*\([^"| \t\\]\)\s*', ' | \1', '^top'],
-      \   ['^[ \t\\]*', '', '^top'],
+      \ 'zsh': [
+      \   s:remove_trailing_backslashes,
+      \ ],
+      \ 'fish': [
+      \   s:remove_trailing_backslashes,
+      \ ],
+      \ 'dockerfile': [
+      \   s:remove_trailing_backslashes,
+      \ ],
       \ }
+unlet s:remove_trailing_backslashes
+unlet s:remove_line_continuation_symbols_of_Vim
 ```
 
 The variable, `g:SandJoin#patterns`, is internally used in `SandJoin#substitute()`.
